@@ -1,0 +1,90 @@
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 20px;
+}
+
+.login-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-card h1 {
+    color: #1877f2;
+    font-size: 32px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.login-card .subtitle {
+    color: #65676b;
+    font-size: 18px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.login-card .form-group {
+    margin-bottom: 15px;
+}
+
+.login-card input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #dddfe2;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+.login-card input:focus {
+    border-color: #1877f2;
+    outline: none;
+}
+
+.login-card .btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.login-footer {
+    margin-top: 20px;
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #dddfe2;
+}
+
+.login-footer a {
+    color: #1877f2;
+    font-weight: 600;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}
+
+.test-credentials {
+    margin-top: 20px;
+    padding: 15px;
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.test-credentials p {
+    margin: 5px 0;
+}
+
+.test-credentials strong {
+    color: #856404;
+}
+
+/* Made with Bob */

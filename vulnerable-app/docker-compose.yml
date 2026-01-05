@@ -1,0 +1,129 @@
+version: '3.8'
+
+services:
+  # PostgreSQL データベース
+  postgres:
+    image: postgres:15-alpine
+    container_name: vulnerable-app-db
+    environment:
+      POSTGRES_USER: vulnapp
+      POSTGRES_PASSWORD: insecure_password_123
+      POSTGRES_DB: vulnerable_app
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - vulnerable-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vulnapp"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MongoDB（NoSQLインジェクションテスト用）
+  mongodb:
+    image: mongo:6
+    container_name: vulnerable-app-mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: vulnapp
+      MONGO_INITDB_ROOT_PASSWORD: insecure_password_123
+      MONGO_INITDB_DATABASE: vulnerable_app
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - vulnerable-network
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # バックエンドAPI（Node.js/Express）
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: vulnerable-app-backend
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      # データベース接続情報（意図的に環境変数に平文で保存）
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: vulnapp
+      DB_PASSWORD: insecure_password_123
+      DB_NAME: vulnerable_app
+      # MongoDB接続情報
+      MONGO_HOST: mongodb
+      MONGO_PORT: 27017
+      MONGO_USER: vulnapp
+      MONGO_PASSWORD: insecure_password_123
+      MONGO_DB: vulnerable_app
+      # JWT秘密鍵（意図的に弱い鍵を使用）
+      JWT_SECRET: weak_secret_key
+      # セッション秘密鍵（意図的に弱い鍵を使用）
+      SESSION_SECRET: weak_session_secret
+      # CORS設定（意図的に緩い設定）
+      CORS_ORIGIN: "*"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend/src:/app/src
+      - ./backend/package.json:/app/package.json
+      - ./backend/package-lock.json:/app/package-lock.json
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+    networks:
+      - vulnerable-network
+    command: npm run dev
+
+  # フロントエンド（React）
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: vulnerable-app-frontend
+    environment:
+      REACT_APP_API_URL: http://localhost:3000
+      # 意図的にAPIキーを環境変数に保存
+      REACT_APP_API_KEY: exposed_api_key_12345
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - vulnerable-network
+    command: npm start
+
+  # Adminer（データベース管理ツール - デバッグ用）
+  adminer:
+    image: adminer:latest
+    container_name: vulnerable-app-adminer
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+    networks:
+      - vulnerable-network
+    depends_on:
+      - postgres
+
+networks:
+  vulnerable-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  mongodb_data:
+
+# Made with Bob

@@ -1,0 +1,75 @@
+.home-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.home-header h1 {
+    color: #1c1e21;
+    font-size: 32px;
+    margin: 0;
+}
+
+.posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.post-card {
+    transition: transform 0.2s;
+}
+
+.post-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.post-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.post-author {
+    font-weight: 600;
+    color: #1877f2;
+    font-size: 16px;
+}
+
+.post-author:hover {
+    text-decoration: underline;
+}
+
+.post-date {
+    color: #65676b;
+    font-size: 14px;
+}
+
+.post-title {
+    color: #1c1e21;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.post-content {
+    color: #1c1e21;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.post-footer {
+    display: flex;
+    gap: 10px;
+}
+
+.no-posts {
+    text-align: center;
+    padding: 60px 20px;
+    color: #65676b;
+    font-size: 18px;
+}
+
+/* Made with Bob */

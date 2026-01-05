@@ -1,0 +1,98 @@
+.App {
+    min-height: 100vh;
+    background: #f0f2f5;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: #1877f2;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #166fe5;
+}
+
+.btn-secondary {
+    background: #e4e6eb;
+    color: #050505;
+}
+
+.btn-secondary:hover {
+    background: #d8dadf;
+}
+
+.btn-danger {
+    background: #f02849;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #d91c3f;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #1c1e21;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #dddfe2;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #1877f2;
+}
+
+.error {
+    color: #f02849;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.success {
+    color: #42b72a;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+    color: #65676b;
+}
+
+/* Made with Bob */
