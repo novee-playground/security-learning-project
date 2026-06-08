@@ -1,0 +1,125 @@
+image:
+  registry: 208760706591.dkr.ecr.us-east-1.amazonaws.com
+  repository: japanese-app
+  tag: "0.1.2"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+backend:
+  enabled: true
+  replicas: 1
+  port: 3000
+  service:
+    type: ClusterIP
+    port: 3000
+  env:
+    NODE_ENV: development
+    PORT: "3000"
+    CORS_ORIGIN: "*"
+    # Postgres (templated against the chart's postgres Service via `tpl`)
+    DB_HOST: '{{ include "japanese-app.fullname" . }}-postgres'
+    DB_PORT: "5432"
+    DB_USER: vulnapp
+    DB_PASSWORD: insecure_password_123
+    DB_NAME: vulnerable_app
+    # MongoDB
+    MONGO_HOST: '{{ include "japanese-app.fullname" . }}-mongodb'
+    MONGO_PORT: "27017"
+    MONGO_USER: vulnapp
+    MONGO_PASSWORD: insecure_password_123
+    MONGO_DB: vulnerable_app
+    # Intentionally weak secrets (learning app)
+    JWT_SECRET: weak_secret_key
+    SESSION_SECRET: weak_session_secret
+  probes:
+    enabled: true
+    liveness:
+      httpGet:
+        path: /health
+        port: 3000
+      initialDelaySeconds: 15
+      periodSeconds: 20
+    readiness:
+      httpGet:
+        path: /health
+        port: 3000
+      initialDelaySeconds: 5
+      periodSeconds: 10
+  resources: {}
+
+frontend:
+  enabled: true
+  replicas: 1
+  port: 3000
+  service:
+    type: ClusterIP
+    port: 80
+  env:
+    # The React bundle uses relative URLs; the dev-server's setupProxy.js
+    # forwards /api, /health, /uploads to BACKEND_URL.
+    BACKEND_URL: 'http://{{ include "japanese-app.fullname" . }}-backend:{{ .Values.backend.service.port }}'
+    REACT_APP_API_KEY: exposed_api_key_12345
+    HOST: "0.0.0.0"
+    PORT: "3000"
+    CI: "true"
+    DANGEROUSLY_DISABLE_HOST_CHECK: "true"
+    WDS_SOCKET_HOST: "0.0.0.0"
+  probes:
+    enabled: true
+    startup:
+      tcpSocket:
+        port: 3000
+      periodSeconds: 5
+      failureThreshold: 30
+    readiness:
+      tcpSocket:
+        port: 3000
+      periodSeconds: 10
+    liveness:
+      tcpSocket:
+        port: 3000
+      periodSeconds: 20
+  resources: {}
+
+postgres:
+  enabled: true
+  image: postgres:15-alpine
+  port: 5432
+  service:
+    type: ClusterIP
+    port: 5432
+  auth:
+    user: vulnapp
+    password: insecure_password_123
+    db: vulnerable_app
+  # Ephemeral storage by design (learning app — init.sql re-seeds on restart)
+  storage:
+    type: emptyDir
+  resources: {}
+
+mongodb:
+  enabled: true
+  image: mongo:6
+  port: 27017
+  service:
+    type: ClusterIP
+    port: 27017
+  auth:
+    user: vulnapp
+    password: insecure_password_123
+    db: vulnerable_app
+  storage:
+    type: emptyDir
+  resources: {}
+
+adminer:
+  enabled: true
+  image: adminer:latest
+  port: 8080
+  service:
+    type: ClusterIP
+    port: 8080
+  env:
+    ADMINER_DEFAULT_SERVER: '{{ include "japanese-app.fullname" . }}-postgres'
+  resources: {}

@@ -11,6 +11,13 @@ RUN npm install
 # アプリケーションのソースコードをコピー
 COPY . .
 
+# CRA dev server needs these to run inside a container / cluster
+ENV HOST=0.0.0.0 \
+    PORT=3000 \
+    CI=true \
+    DANGEROUSLY_DISABLE_HOST_CHECK=true \
+    WDS_SOCKET_HOST=0.0.0.0
+
 # ポート3000を公開
 EXPOSE 3000
 

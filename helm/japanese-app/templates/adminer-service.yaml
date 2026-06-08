@@ -1,0 +1,20 @@
+{{- if .Values.adminer.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "japanese-app.fullname" . }}-adminer
+  labels:
+    {{- include "japanese-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: adminer
+spec:
+  type: {{ .Values.adminer.service.type }}
+  ports:
+    - port: {{ .Values.adminer.service.port }}
+      targetPort: {{ .Values.adminer.port }}
+      protocol: TCP
+      name: http
+  selector:
+    app.kubernetes.io/name: {{ include "japanese-app.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: adminer
+{{- end }}

@@ -1,0 +1,20 @@
+{{- if .Values.mongodb.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "japanese-app.fullname" . }}-mongodb
+  labels:
+    {{- include "japanese-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: mongodb
+spec:
+  type: {{ .Values.mongodb.service.type }}
+  ports:
+    - port: {{ .Values.mongodb.service.port }}
+      targetPort: {{ .Values.mongodb.port }}
+      protocol: TCP
+      name: mongo
+  selector:
+    app.kubernetes.io/name: {{ include "japanese-app.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: mongodb
+{{- end }}

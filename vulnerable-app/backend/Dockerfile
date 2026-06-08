@@ -19,4 +19,4 @@ COPY . .
 EXPOSE 3000
 
 # アプリケーションの起動
-CMD ["npm", "run", "dev"]
+CMD ["node", "src/server.js"]

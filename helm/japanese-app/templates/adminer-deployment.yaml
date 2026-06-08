@@ -1,0 +1,36 @@
+{{- if .Values.adminer.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "japanese-app.fullname" . }}-adminer
+  labels:
+    {{- include "japanese-app.labels" . | nindent 4 }}
+    app.kubernetes.io/component: adminer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "japanese-app.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: adminer
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "japanese-app.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/component: adminer
+    spec:
+      containers:
+        - name: adminer
+          image: {{ .Values.adminer.image }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.adminer.port }}
+          env:
+            {{- range $k, $v := .Values.adminer.env }}
+            - name: {{ $k }}
+              value: {{ tpl $v $ | quote }}
+            {{- end }}
+          resources:
+            {{- toYaml .Values.adminer.resources | nindent 12 }}
+{{- end }}

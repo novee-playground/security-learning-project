@@ -9,7 +9,9 @@ import axios from 'axios';
 
 // ===== 脆弱性1: APIキーのハードコード =====
 const API_KEY = 'exposed_api_key_12345';
-const API_URL = window.APP_CONFIG?.API_URL || 'http://localhost:3000';
+// Empty baseURL → relative paths (/api/...) so requests stay same-origin
+// and get proxied by setupProxy.js to BACKEND_URL.
+const API_URL = window.APP_CONFIG?.API_URL || process.env.REACT_APP_API_URL || '';
 
 // ===== 脆弱性2: 機密情報のローカルストレージ保存 =====
 const getToken = () => localStorage.getItem('token');
